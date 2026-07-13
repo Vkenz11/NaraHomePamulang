@@ -473,14 +473,7 @@ export default function App() {
             </div>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-wide drop-shadow-sm">
-              
-              <SafeImage
-                    src="assets/images/img7.webp"
-                    fallbackSrc="images/nara_bedroom_1783879457070.jpg"
-                    alt="Luxury Bedroom Suite Interior"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />Hunian Modern di Jantung Pamulang
+              Hunian Modern di Jantung Pamulang
             </h1>
 
             <p className="text-gray-200 text-base sm:text-lg lg:text-xl max-w-2xl font-light leading-relaxed">
@@ -1736,7 +1729,7 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[3/4] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="/images/img7.webp"
+                    src="assets/images/img7.webp"
                     fallbackSrc="images/nara_bedroom_1783879457070.jpg"
                     alt="Luxury Bedroom Suite Interior"
                     className="w-full h-full object-cover"

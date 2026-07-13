@@ -78,9 +78,9 @@ export const PROPERTY_CONFIG = {
   ],
 
   // Gallery categorization (with placeholder paths generated or fallbacks)
-  logo: "/src/assets/images/logo_narahome-removebg-preview.webp",
-  heroImage: "/src/assets/images/img15.webp",
-  facade3D: "/src/assets/images/1 PDF 3D FACADE & SITE - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0001.webp",
+  logo: "/assets/images/logo_narahome-removebg-preview.webp",
+  heroImage: "/assets/images/img15.webp",
+  facade3D: "/assets/images/1 PDF 3D FACADE & SITE - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0001.webp",
   
   // Multi-page PDF layouts
   facade3DPages: [

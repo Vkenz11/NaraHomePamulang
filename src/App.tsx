@@ -453,7 +453,7 @@ export default function App() {
         <div className="absolute inset-0">
           <SafeImage
             src={(PROPERTY_CONFIG as any).heroImage || PROPERTY_CONFIG.facade3D}
-            fallbackSrc="images/img15.webp"
+            fallbackSrc="assets/images/img15.webp"
             alt="Nara Home Pamulang Premium Exterior Facade"
             className="w-full h-full object-cover object-center scale-105 animate-fade-in"
             loading="eager"
@@ -581,7 +581,7 @@ export default function App() {
             <div className="lg:col-span-6 relative">
               <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white">
                 <SafeImage
-                  src="images/img3.webp"
+                  src="assets/images/img3.webp"
                   fallbackSrc="images/nara_living_room_1783879443554.jpg"
                   alt="Nara Home Modern Living Room Interior"
                   className="w-full h-full object-cover"
@@ -941,7 +941,7 @@ export default function App() {
                 <div className="md:col-span-7 bg-white p-2 rounded-xl border border-gray-150 flex justify-center items-center shadow-md aspect-4/3 relative overflow-hidden group">
                   {floorPlanLevel === "1st" ? (
                     <SafeImage
-                      src="images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
+                      src="assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
                       fallbackSrc="images/nara_living_room_1783879443554.jpg"
                       alt="Denah 3D Lantai 1 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
@@ -949,7 +949,7 @@ export default function App() {
                     />
                   ) : (
                     <SafeImage
-                      src="images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
+                      src="assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
                       fallbackSrc="images/nara_bedroom_1783879457070.jpg"
                       alt="Denah 3D Lantai 2 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
@@ -1742,7 +1742,7 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[1/1] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="images/img11.webp"
+                    src="assets/images/img11.webp"
                     fallbackSrc="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80"
                     alt="Cozy Minimalist Kitchen"
                     className="w-full h-full object-cover"
@@ -1751,7 +1751,7 @@ export default function App() {
                 </div>
                 <div className="rounded-2xl overflow-hidden aspect-[4/5] shadow-2xl border border-primary-light bg-cream-dark">
                   <SafeImage
-                    src="images/img19.webp"
+                    src="assets/images/img19.webp"
                     fallbackSrc="images/nara_exterior_hero_1783879429976.jpg"
                     alt="Nara Home Modern Exterior detailing"
                     className="w-full h-full object-cover"

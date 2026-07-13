@@ -473,7 +473,14 @@ export default function App() {
             </div>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-wide drop-shadow-sm">
-              testetset Hunian Modern di Jantung Pamulang
+              
+              <SafeImage
+                    src="/images/img7.webp"
+                    fallbackSrc="images/nara_bedroom_1783879457070.jpg"
+                    alt="Luxury Bedroom Suite Interior"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />Hunian Modern di Jantung Pamulang
             </h1>
 
             <p className="text-gray-200 text-base sm:text-lg lg:text-xl max-w-2xl font-light leading-relaxed">

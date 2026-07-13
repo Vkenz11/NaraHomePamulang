@@ -475,7 +475,7 @@ export default function App() {
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-wide drop-shadow-sm">
               
               <SafeImage
-                    src="/images/img7.webp"
+                    src="assets/images/img7.webp"
                     fallbackSrc="images/nara_bedroom_1783879457070.jpg"
                     alt="Luxury Bedroom Suite Interior"
                     className="w-full h-full object-cover"

@@ -582,7 +582,7 @@ export default function App() {
               <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white">
                 <SafeImage
                   src="assets/images/img3.webp"
-                  fallbackSrc="images/nara_living_room_1783879443554.jpg"
+                  fallbackSrc="assets/images/nara_living_room_1783879443554.jpg"
                   alt="Nara Home Modern Living Room Interior"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -950,7 +950,7 @@ export default function App() {
                   ) : (
                     <SafeImage
                       src="assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
-                      fallbackSrc="images/nara_bedroom_1783879457070.jpg"
+                      fallbackSrc="assets/images/nara_bedroom_1783879457070.jpg"
                       alt="Denah 3D Lantai 2 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="eager"
@@ -1730,7 +1730,7 @@ export default function App() {
                 <div className="rounded-2xl overflow-hidden aspect-[3/4] shadow-2xl border border-primary-light">
                   <SafeImage
                     src="assets/images/img7.webp"
-                    fallbackSrc="images/nara_bedroom_1783879457070.jpg"
+                    fallbackSrc="assets/images/nara_bedroom_1783879457070.jpg"
                     alt="Luxury Bedroom Suite Interior"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -1752,7 +1752,7 @@ export default function App() {
                 <div className="rounded-2xl overflow-hidden aspect-[4/5] shadow-2xl border border-primary-light bg-cream-dark">
                   <SafeImage
                     src="assets/images/img19.webp"
-                    fallbackSrc="images/nara_exterior_hero_1783879429976.jpg"
+                    fallbackSrc="assets/images/nara_exterior_hero_1783879429976.jpg"
                     alt="Nara Home Modern Exterior detailing"
                     className="w-full h-full object-cover"
                     loading="lazy"

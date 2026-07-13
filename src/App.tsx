@@ -453,7 +453,7 @@ export default function App() {
         <div className="absolute inset-0">
           <SafeImage
             src={(PROPERTY_CONFIG as any).heroImage || PROPERTY_CONFIG.facade3D}
-            fallbackSrc="/src/assets/images/img15.webp"
+            fallbackSrc="images/img15.webp"
             alt="Nara Home Pamulang Premium Exterior Facade"
             className="w-full h-full object-cover object-center scale-105 animate-fade-in"
             loading="eager"
@@ -581,8 +581,8 @@ export default function App() {
             <div className="lg:col-span-6 relative">
               <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white">
                 <SafeImage
-                  src="/src/assets/images/img3.webp"
-                  fallbackSrc="/src/assets/images/nara_living_room_1783879443554.jpg"
+                  src="images/img3.webp"
+                  fallbackSrc="images/nara_living_room_1783879443554.jpg"
                   alt="Nara Home Modern Living Room Interior"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -879,7 +879,7 @@ export default function App() {
                   <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden border border-gray-150 bg-cream/30 p-2 shadow-inner group flex items-center justify-center">
                     <SafeImage
                       src={(PROPERTY_CONFIG as any).facade3DPages[facadePageIndex]}
-                      fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                      fallbackSrc="images/nara_exterior_hero_1783879429976.jpg"
                       alt={`3D Facade & Site Plan Nara Home Pamulang - Halaman ${facadePageIndex + 1}`}
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.01]"
                     />
@@ -941,16 +941,16 @@ export default function App() {
                 <div className="md:col-span-7 bg-white p-2 rounded-xl border border-gray-150 flex justify-center items-center shadow-md aspect-4/3 relative overflow-hidden group">
                   {floorPlanLevel === "1st" ? (
                     <SafeImage
-                      src="/src/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
-                      fallbackSrc="/src/assets/images/nara_living_room_1783879443554.jpg"
+                      src="images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
+                      fallbackSrc="images/nara_living_room_1783879443554.jpg"
                       alt="Denah 3D Lantai 1 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="eager"
                     />
                   ) : (
                     <SafeImage
-                      src="/src/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
-                      fallbackSrc="/src/assets/images/nara_bedroom_1783879457070.jpg"
+                      src="images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
+                      fallbackSrc="images/nara_bedroom_1783879457070.jpg"
                       alt="Denah 3D Lantai 2 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="eager"
@@ -1288,7 +1288,7 @@ export default function App() {
                   <div className="relative aspect-[3/4] md:aspect-auto md:h-[450px] bg-slate-50 border border-gray-150 rounded-xl overflow-hidden flex items-center justify-center p-4">
                     <SafeImage
                       src={selectedUnit.image}
-                      fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                      fallbackSrc="images/nara_exterior_hero_1783879429976.jpg"
                       alt={`Layout detail unit ${selectedUnit.number}`}
                       className="max-w-full max-h-full object-contain rounded-lg"
                     />
@@ -1467,7 +1467,7 @@ export default function App() {
       >
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/nara_living_room_1783879443554.jpg"
+            src="images/nara_living_room_1783879443554.jpg"
             alt="Nara Home Living Room Double Void"
             className="w-full h-full object-cover opacity-35 scale-105"
             loading="lazy"
@@ -1729,8 +1729,8 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[3/4] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="/src/assets/images/img7.webp"
-                    fallbackSrc="/src/assets/images/nara_bedroom_1783879457070.jpg"
+                    src="/images/img7.webp"
+                    fallbackSrc="images/nara_bedroom_1783879457070.jpg"
                     alt="Luxury Bedroom Suite Interior"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -1742,7 +1742,7 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[1/1] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="/src/assets/images/img11.webp"
+                    src="images/img11.webp"
                     fallbackSrc="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80"
                     alt="Cozy Minimalist Kitchen"
                     className="w-full h-full object-cover"
@@ -1751,8 +1751,8 @@ export default function App() {
                 </div>
                 <div className="rounded-2xl overflow-hidden aspect-[4/5] shadow-2xl border border-primary-light bg-cream-dark">
                   <SafeImage
-                    src="/src/assets/images/img19.webp"
-                    fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                    src="images/img19.webp"
+                    fallbackSrc="images/nara_exterior_hero_1783879429976.jpg"
                     alt="Nara Home Modern Exterior detailing"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -2120,7 +2120,7 @@ export default function App() {
         {/* Background house parallax styled */}
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+            src="images/nara_exterior_hero_1783879429976.jpg"
             alt="Nara Home Modern Night Facade"
             className="w-full h-full object-cover opacity-15"
             loading="lazy"
@@ -2297,7 +2297,7 @@ export default function App() {
             
             <div className="aspect-video bg-black relative flex items-center justify-center">
               {/* Luxury simulated video player design */}
-              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/src/assets/images/nara_living_room_1783879443554.jpg')" }} />
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('images/nara_living_room_1783879443554.jpg')" }} />
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
               
               <div className="relative z-10 text-center max-w-md p-6 text-white space-y-4">

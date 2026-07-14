@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ais-dev-ev4sufhtflt7xcfneezsvs-591816875695.asia-southeast1.run.app/sitemap.xml
+Sitemap: https://narahomepamulang.com/sitemap.xml

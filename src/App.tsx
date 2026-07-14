@@ -26,6 +26,7 @@ import {
   Video,
   Trees,
   Moon,
+  Sun,
   Dribbble,
   Key,
   ChevronDown,
@@ -182,6 +183,27 @@ export default function App() {
   const [selectedUnit, setSelectedUnit] = useState<any | null>(null);
   const [activeSpecTab, setActiveSpecTab] = useState<"layout" | "material">("layout");
   const [activeHighlightIndex, setActiveHighlightIndex] = useState(0);
+
+  // Dark mode state with localStorage persistence
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme");
+      if (saved) return saved === "dark";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
+  // Apply dark class to document root when darkMode state changes
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
   
   // Modal states
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -327,7 +349,7 @@ export default function App() {
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-white text-slate-900 shadow-md py-3 border-b border-gray-100"
+            ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-md py-3 border-b border-gray-100 dark:border-slate-800"
             : "bg-gradient-to-b from-black/60 to-transparent text-white py-5"
         }`}
         id="navbar"
@@ -382,9 +404,28 @@ export default function App() {
 
           {/* Nav CTA */}
           <div className="hidden sm:flex items-center space-x-4">
+            {/* Theme Toggle Button Desktop */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-full border transition-all duration-300 flex items-center justify-center ${
+                isScrolled
+                  ? "border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-amber-400"
+                  : "border-white/20 hover:bg-white/10 text-white hover:text-amber-300"
+              }`}
+              title={darkMode ? "Aktifkan Mode Terang" : "Aktifkan Mode Gelap"}
+              aria-label="Toggle Theme"
+            >
+              {darkMode ? (
+                <Sun className="h-4 w-4 text-amber-400" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </button>
             <button
               onClick={() => triggerWhatsApp()}
-              className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-800 hover:text-white border border-accent hover:bg-accent rounded transition-all duration-300"
+              className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider border border-accent hover:bg-accent hover:text-white rounded transition-all duration-300 ${
+                isScrolled ? "text-slate-800 dark:text-white" : "text-white"
+              }`}
             >
               Chat WhatsApp
             </button>
@@ -397,13 +438,34 @@ export default function App() {
           </div>
 
           {/* Mobile hamburger menu */}
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="lg:hidden p-2 rounded hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-accent"
-            aria-label="Buka Menu"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
+          <div className="flex items-center space-x-2 lg:hidden">
+            {/* Theme Toggle Button Mobile Sticky Header */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-full border transition-all duration-300 flex items-center justify-center ${
+                isScrolled
+                  ? "border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-amber-400"
+                  : "border-white/20 hover:bg-white/10 text-white hover:text-amber-300"
+              }`}
+              title={darkMode ? "Aktifkan Mode Terang" : "Aktifkan Mode Gelap"}
+              aria-label="Toggle Theme"
+            >
+              {darkMode ? (
+                <Sun className="h-4 w-4 text-amber-400" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className={`p-2 rounded hover:bg-black/10 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent ${
+                isScrolled ? "text-slate-800 dark:text-white" : "text-white"
+              }`}
+              aria-label="Buka Menu"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -415,17 +477,17 @@ export default function App() {
         onClick={() => setMobileMenuOpen(false)}
       >
         <div
-          className={`absolute top-0 right-0 w-4/5 max-w-sm h-full bg-cream p-6 shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-out ${
+          className={`absolute top-0 right-0 w-4/5 max-w-sm h-full bg-cream dark:bg-slate-900 p-6 shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-out ${
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
           <div>
-            <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
+            <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-slate-800 pb-4">
               <Logo className="h-9 w-auto object-contain" />
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-gray-100 focus:outline-none"
+                className="p-2 text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 focus:outline-none"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -433,51 +495,87 @@ export default function App() {
 
             <nav className="flex flex-col space-y-4">
               <button
-                onClick={() => scrollTo("home")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("home");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <HomeIcon className="h-5 w-5 text-primary" />
+                <HomeIcon className="h-5 w-5 text-primary dark:text-accent" />
                 <span>Home</span>
               </button>
               <button
-                onClick={() => scrollTo("why")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("why");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <Users className="h-5 w-5 text-primary" />
+                <Users className="h-5 w-5 text-primary dark:text-accent" />
                 <span>Mengapa Nara Home</span>
               </button>
               <button
-                onClick={() => scrollTo("specs")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("specs");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <Layers className="h-5 w-5 text-primary" />
+                <Layers className="h-5 w-5 text-primary dark:text-accent" />
                 <span>Spesifikasi & Layout</span>
               </button>
               <button
-                onClick={() => scrollTo("gallery")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("gallery");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Sparkles className="h-5 w-5 text-primary dark:text-accent" />
                 <span>Galeri Show Unit</span>
               </button>
               <button
-                onClick={() => scrollTo("location")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("location");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <MapPin className="h-5 w-5 text-primary" />
+                <MapPin className="h-5 w-5 text-primary dark:text-accent" />
                 <span>Lokasi & Fasilitas</span>
               </button>
               <button
-                onClick={() => scrollTo("faq")}
-                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 hover:text-accent font-medium transition-colors"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollTo("faq");
+                }}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors"
               >
-                <Compass className="h-5 w-5 text-primary" />
+                <Compass className="h-5 w-5 text-primary dark:text-accent" />
                 <span>FAQ</span>
+              </button>
+
+              {/* Theme Toggle option inside menu */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="flex items-center space-x-3 text-left py-2 px-3 rounded hover:bg-primary/5 dark:hover:bg-slate-800 hover:text-accent dark:text-gray-200 font-medium transition-colors w-full border-t border-gray-100 dark:border-slate-800 pt-4"
+              >
+                {darkMode ? (
+                  <>
+                    <Sun className="h-5 w-5 text-amber-400" />
+                    <span>Mode Terang</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-5 w-5 text-primary" />
+                    <span>Mode Gelap</span>
+                  </>
+                )}
               </button>
             </nav>
           </div>
 
-          <div className="space-y-3 pt-6 border-t border-gray-100">
+          <div className="space-y-3 pt-6 border-t border-gray-100 dark:border-slate-800">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -489,7 +587,7 @@ export default function App() {
             </button>
             <button
               onClick={() => triggerWhatsApp()}
-              className="w-full border border-accent text-slate-800 hover:bg-accent hover:text-white py-3 rounded font-semibold text-sm tracking-wider uppercase transition-colors flex items-center justify-center space-x-2"
+              className="w-full border border-accent text-slate-800 dark:text-gray-200 hover:bg-accent hover:text-white py-3 rounded font-semibold text-sm tracking-wider uppercase transition-colors flex items-center justify-center space-x-2"
             >
               <Phone className="h-4 w-4" />
               <span>WhatsApp Chat</span>
@@ -684,7 +782,7 @@ export default function App() {
       <section
         id="why"
         ref={sectionRefs.why}
-        className="py-20 md:py-28 bg-cream"
+        className="py-20 md:py-28 bg-cream dark:bg-slate-900 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -697,7 +795,7 @@ export default function App() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="lg:col-span-6 relative"
             >
-              <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white">
+              <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white dark:border-slate-800">
                 <SafeImage
                   src="/assets/images/img3.webp"
                   fallbackSrc="/assets/images/nara_living_room_1783879443554.jpg"
@@ -730,16 +828,16 @@ export default function App() {
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
               className="lg:col-span-6 space-y-6 text-left lg:pl-6"
             >
-              <div className="inline-block bg-primary/10 border border-primary/20 text-primary text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+              <div className="inline-block bg-primary/10 border border-primary/20 text-primary dark:text-accent text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
                 Solusi Rumah Impian Anda
               </div>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
                 Hunian Ideal Bebas Khawatir Untuk Keluarga Muda
               </h2>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
                 Menemukan rumah pertama sering kali penuh dengan kompromi. Lokasi murah tapi sangat jauh, lokasi dekat tapi harganya tidak masuk akal, atau kualitas bangunan seadanya. 
               </p>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
                 <strong>Nara Home Pamulang</strong> hadir mengeliminasi semua kecemasan tersebut. Kami menyatukan desain arsitektur modern minimalis berkelas, lokasi super strategis bebas macet, dan harga yang sangat masuk akal bagi pasangan muda berpenghasilan 15–40 Juta/bulan.
               </p>
 
@@ -750,8 +848,8 @@ export default function App() {
                     <Check className="h-4 w-4 stroke-[3]" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Finishing Mewah</h4>
-                    <p className="text-slate-500 text-xs">Homogeneous Tile 60x60, cat jotun premium.</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Finishing Mewah</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs">Homogeneous Tile 60x60, cat jotun premium.</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -759,8 +857,8 @@ export default function App() {
                     <Check className="h-4 w-4 stroke-[3]" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Bata Merah Kokoh</h4>
-                    <p className="text-slate-500 text-xs">Bukan hebel tipis, menjamin kedap suara & suhu sejuk.</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Bata Merah Kokoh</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs">Bukan hebel tipis, menjamin kedap suara & suhu sejuk.</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -768,8 +866,8 @@ export default function App() {
                     <Check className="h-4 w-4 stroke-[3]" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Lingkungan Bebas Banjir</h4>
-                    <p className="text-slate-500 text-xs">Lokasi di dataran tinggi Benda Baru yang asri.</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Lingkungan Bebas Banjir</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs">Lokasi di dataran tinggi Benda Baru yang asri.</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -777,8 +875,8 @@ export default function App() {
                     <Check className="h-4 w-4 stroke-[3]" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Kawasan Berkembang</h4>
-                    <p className="text-slate-500 text-xs">Dekat CBD Tangerang Selatan, capital gain tinggi.</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Kawasan Berkembang</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs">Dekat CBD Tangerang Selatan, capital gain tinggi.</p>
                   </div>
                 </div>
               </div>
@@ -793,7 +891,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => triggerWhatsApp("Halo, saya mau tanya simulasi cicilan KPR Nara Home Pamulang.")}
-                  className="border border-accent text-slate-800 hover:bg-accent hover:text-white font-semibold py-3.5 px-6 rounded text-sm uppercase tracking-wider transition-colors flex items-center justify-center space-x-2"
+                  className="border border-accent text-slate-800 dark:text-gray-200 hover:bg-accent hover:text-white font-semibold py-3.5 px-6 rounded text-sm uppercase tracking-wider transition-colors flex items-center justify-center space-x-2"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Dapatkan Brosur & KPR Info</span>
@@ -810,7 +908,7 @@ export default function App() {
       <section
         id="highlights"
         ref={sectionRefs.highlights}
-        className="py-20 md:py-24 bg-white border-y border-gray-100"
+        className="py-20 md:py-24 bg-white dark:bg-slate-950 border-y border-gray-100 dark:border-slate-900 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -821,10 +919,10 @@ export default function App() {
             className="text-center max-w-3xl mx-auto mb-16 space-y-3"
           >
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Premium Living Standard</span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
               Keunggulan Utama Nara Home Pamulang
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Setiap sudut cluster kami dirancang dengan penuh dedikasi untuk mendukung kehidupan keluarga harmonis dan investasi properti bernilai tinggi.
             </p>
           </motion.div>
@@ -846,15 +944,15 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                  className="group bg-cream p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                  className="group bg-cream dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
                 >
                   <div className="bg-primary group-hover:bg-accent text-white p-3.5 rounded-xl inline-block transition-colors mb-6 shadow-md">
                     <IconComp className="h-6 w-6" />
                   </div>
-                  <h3 className="font-serif text-xl font-bold text-slate-900 group-hover:text-white mb-3 tracking-wide">
+                  <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-white group-hover:text-white mb-3 tracking-wide">
                     {item.title}
                   </h3>
-                  <p className="text-slate-600 group-hover:text-gray-200 text-sm leading-relaxed font-light">
+                  <p className="text-slate-600 dark:text-gray-300 group-hover:text-gray-200 text-sm leading-relaxed font-light">
                     {item.desc}
                   </p>
                 </motion.div>
@@ -885,16 +983,16 @@ export default function App() {
       <section
         id="specs"
         ref={sectionRefs.specs}
-        className="py-20 md:py-28 bg-cream"
+        className="py-20 md:py-28 bg-cream dark:bg-slate-900 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Spesifikasi & Denah Ruang</span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
               Tipe Eksklusif: 2 Lantai Modern Minimalist
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Nikmati luas bangunan ideal 74 m² yang ditata sangat fungsional tanpa ada ruang yang terbuang sia-sia.
             </p>
           </div>
@@ -902,20 +1000,20 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
             {/* SVG Floor Plan Area - 7 Columns */}
-            <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-lg relative">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 pb-6 mb-6 gap-4">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-950 p-6 sm:p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-lg relative">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-6 mb-6 gap-4">
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-slate-900">Tata Ruang & Denah</h3>
-                  <p className="text-xs text-slate-500">Visualisasi layout rumah impian 2 lantai Anda</p>
+                  <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">Tata Ruang & Denah</h3>
+                  <p className="text-xs text-slate-500 dark:text-gray-400">Visualisasi layout rumah impian 2 lantai Anda</p>
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-3">
                   {/* Format Toggle (2D vs 3D) */}
-                  <div className="bg-slate-100 p-1 rounded-lg flex space-x-1">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex space-x-1">
                     <button
                       onClick={() => setFloorPlanFormat("2d")}
                       className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-all duration-300 ${
-                        floorPlanFormat === "2d" ? "bg-accent text-white shadow" : "text-slate-600 hover:text-slate-900"
+                        floorPlanFormat === "2d" ? "bg-accent text-white shadow" : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
                       Interactive 2D Layout
@@ -923,7 +1021,7 @@ export default function App() {
                     <button
                       onClick={() => { setFloorPlanFormat("facade"); setSelectedRoom(null); }}
                       className={`px-3 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-all duration-300 ${
-                        floorPlanFormat === "facade" ? "bg-accent text-white shadow" : "text-slate-600 hover:text-slate-900"
+                        floorPlanFormat === "facade" ? "bg-accent text-white shadow" : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
                       Facade & Site 3D
@@ -932,11 +1030,11 @@ export default function App() {
 
                   {/* Level Tabs (only relevant or active in 2D) */}
                   {floorPlanFormat === "2d" && (
-                    <div className="bg-cream p-1 rounded-lg flex space-x-1 border border-gray-150">
+                    <div className="bg-cream dark:bg-slate-800 p-1 rounded-lg flex space-x-1 border border-gray-150 dark:border-slate-700">
                       <button
                         onClick={() => { setFloorPlanLevel("1st"); setSelectedRoom(null); }}
                         className={`px-2.5 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-colors ${
-                          floorPlanLevel === "1st" ? "bg-primary text-white shadow" : "text-slate-600 hover:text-slate-900"
+                          floorPlanLevel === "1st" ? "bg-primary text-white shadow" : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
                         Lantai 1
@@ -944,7 +1042,7 @@ export default function App() {
                       <button
                         onClick={() => { setFloorPlanLevel("2nd"); setSelectedRoom(null); }}
                         className={`px-2.5 py-1.5 rounded text-[10px] font-semibold uppercase tracking-wider transition-colors ${
-                          floorPlanLevel === "2nd" ? "bg-primary text-white shadow" : "text-slate-600 hover:text-slate-900"
+                          floorPlanLevel === "2nd" ? "bg-primary text-white shadow" : "text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
                         Lantai 2
@@ -1103,9 +1201,9 @@ export default function App() {
 
                 {/* Right Side: Interactive Room Details with Selection Chips */}
                 <div className="md:col-span-5 text-left flex flex-col justify-center h-full space-y-4">
-                  <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
-                    <span className="text-xs text-primary font-bold block mb-1">Eksplorasi Ruangan (Lantai {floorPlanLevel === "1st" ? "1" : "2"})</span>
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                  <div className="bg-primary/5 dark:bg-slate-900/40 p-4 rounded-xl border border-primary/10 dark:border-slate-800">
+                    <span className="text-xs text-primary dark:text-accent font-bold block mb-1">Eksplorasi Ruangan (Lantai {floorPlanLevel === "1st" ? "1" : "2"})</span>
+                    <p className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed mb-3">
                       Ketuk salah satu ruangan di bawah ini untuk melihat ukuran ideal serta penjelasan tata letak fungsinya secara detail:
                     </p>
                     
@@ -1118,7 +1216,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "carport" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Carport
@@ -1128,7 +1226,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "living" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Ruang Tamu
@@ -1138,7 +1236,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "kitchen" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Dapur
@@ -1148,7 +1246,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "bath1" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             WC 1
@@ -1158,7 +1256,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "garden" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Taman
@@ -1171,7 +1269,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "master" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Kamar Utama
@@ -1181,7 +1279,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "bed2" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Kamar Anak 1
@@ -1191,7 +1289,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "bed3" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             Kamar Anak 2
@@ -1201,7 +1299,7 @@ export default function App() {
                             className={`text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded border transition-all ${
                               selectedRoom === "bath2" 
                                 ? "bg-accent text-white border-accent shadow-sm" 
-                                : "bg-white text-slate-700 border-gray-200 hover:border-accent"
+                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:border-accent"
                             }`}
                           >
                             WC 2
@@ -1214,21 +1312,21 @@ export default function App() {
                   {selectedRoom && roomDetails[selectedRoom] ? (
                     <div className="bg-accent/10 border border-accent/20 p-4 rounded-xl animate-fade-in">
                       <span className="text-[9px] text-accent uppercase font-bold tracking-widest block">Spesifikasi Detail</span>
-                      <h4 className="font-serif text-base font-bold text-slate-900 mt-0.5">{roomDetails[selectedRoom].title}</h4>
-                      <p className="text-xs font-semibold text-primary mt-0.5">Dimensi: {roomDetails[selectedRoom].size}</p>
-                      <p className="text-xs text-slate-600 mt-2 leading-relaxed">{roomDetails[selectedRoom].desc}</p>
+                      <h4 className="font-serif text-base font-bold text-slate-900 dark:text-white mt-0.5">{roomDetails[selectedRoom].title}</h4>
+                      <p className="text-xs font-semibold text-primary dark:text-accent mt-0.5">Dimensi: {roomDetails[selectedRoom].size}</p>
+                      <p className="text-xs text-slate-600 dark:text-gray-300 mt-2 leading-relaxed">{roomDetails[selectedRoom].desc}</p>
                     </div>
                   ) : (
-                    <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-gray-150">
-                      <div className="flex items-center space-x-2 text-xs text-slate-700">
+                    <div className="space-y-2 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-gray-150 dark:border-slate-800">
+                      <div className="flex items-center space-x-2 text-xs text-slate-700 dark:text-gray-300">
                         <Check className="h-4 w-4 text-accent flex-shrink-0" />
                         <span>Tata ruang ideal, fungsional tanpa waste of space</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-xs text-slate-700">
+                      <div className="flex items-center space-x-2 text-xs text-slate-700 dark:text-gray-300">
                         <Check className="h-4 w-4 text-accent flex-shrink-0" />
                         <span>Ketinggian plafon tinggi mendukung udara tropis sejuk</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-xs text-slate-700">
+                      <div className="flex items-center space-x-2 text-xs text-slate-700 dark:text-gray-300">
                         <Check className="h-4 w-4 text-accent flex-shrink-0" />
                         <span>Setiap ruangan memiliki sirkulasi udara dan cahaya langsung</span>
                       </div>
@@ -1249,20 +1347,20 @@ export default function App() {
             </div>
 
             {/* Specifications Details - 5 Columns */}
-            <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-lg text-left">
-              <h3 className="font-serif text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2 border-b border-gray-100 pb-3">
+            <div className="lg:col-span-5 bg-white dark:bg-slate-950 p-6 sm:p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-lg text-left">
+              <h3 className="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 border-b border-gray-100 dark:border-slate-800 pb-3">
                 <ShieldCheck className="h-6 w-6 text-primary" />
                 <span>Spesifikasi Teknis Premium</span>
               </h3>
 
               {/* Specification Tab Buttons */}
-              <div className="flex border-b border-gray-200 mb-6">
+              <div className="flex border-b border-gray-200 dark:border-slate-800 mb-6">
                 <button
                   onClick={() => setActiveSpecTab("layout")}
                   className={`flex-1 pb-3 text-xs uppercase font-bold tracking-wider border-b-2 transition-all ${
                     activeSpecTab === "layout"
                       ? "border-accent text-accent font-extrabold"
-                      : "border-transparent text-slate-400 hover:text-slate-700"
+                      : "border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-gray-300"
                   }`}
                 >
                   Dimensi & Layout
@@ -1272,7 +1370,7 @@ export default function App() {
                   className={`flex-1 pb-3 text-xs uppercase font-bold tracking-wider border-b-2 transition-all ${
                     activeSpecTab === "material"
                       ? "border-accent text-accent font-extrabold"
-                      : "border-transparent text-slate-400 hover:text-slate-700"
+                      : "border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-gray-300"
                   }`}
                 >
                   Material Bangunan (SEO)
@@ -1281,56 +1379,56 @@ export default function App() {
 
               {activeSpecTab === "layout" ? (
                 <div className="space-y-4 text-sm animate-fade-in">
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Maximize2 className="h-4 w-4 text-accent" /> Luas Bangunan / Tanah</span>
-                    <span className="font-semibold text-slate-800">74 m² / 60 m²</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Maximize2 className="h-4 w-4 text-accent" /> Luas Bangunan / Tanah</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">74 m² / 60 m²</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Layers className="h-4 w-4 text-accent" /> Jumlah Lantai</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floors} Lantai</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Layers className="h-4 w-4 text-accent" /> Jumlah Lantai</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.floors} Lantai</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Bed className="h-4 w-4 text-accent" /> Kamar Tidur</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bedrooms} Kamar Tidur</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Bed className="h-4 w-4 text-accent" /> Kamar Tidur</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.bedrooms} Kamar Tidur</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Bath className="h-4 w-4 text-accent" /> Kamar Mandi</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bathrooms} Toilet</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Bath className="h-4 w-4 text-accent" /> Kamar Mandi</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.bathrooms} Toilet</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Car className="h-4 w-4 text-accent" /> Kapasitas Carport</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.carport} Mobil (SUV Size)</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Car className="h-4 w-4 text-accent" /> Kapasitas Carport</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.carport} Mobil (SUV Size)</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Zap className="h-4 w-4 text-accent" /> Daya Listrik</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.electricity}</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Zap className="h-4 w-4 text-accent" /> Daya Listrik</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.electricity}</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Droplet className="h-4 w-4 text-accent" /> Suplai Air Bersih</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.waterSupply}</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Droplet className="h-4 w-4 text-accent" /> Suplai Air Bersih</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.waterSupply}</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><Shield className="h-4 w-4 text-accent" /> Struktur Dinding</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.structure}</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><Shield className="h-4 w-4 text-accent" /> Struktur Dinding</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.structure}</span>
                   </div>
-                  <div className="flex justify-between border-b border-slate-50 pb-2">
-                    <span className="text-slate-500 flex items-center gap-2"><HomeIcon className="h-4 w-4 text-accent" /> Finishing Lantai</span>
-                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floorFinishing}</span>
+                  <div className="flex justify-between border-b border-slate-50 dark:border-slate-900 pb-2">
+                    <span className="text-slate-500 dark:text-gray-400 flex items-center gap-2"><HomeIcon className="h-4 w-4 text-accent" /> Finishing Lantai</span>
+                    <span className="font-semibold text-slate-800 dark:text-white">{PROPERTY_CONFIG.specs.floorFinishing}</span>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-3.5 text-xs animate-fade-in max-h-[420px] overflow-y-auto pr-2 scrollbar-thin">
                   {((PROPERTY_CONFIG as any).materialSpecs || []).map((item: any, idx: number) => (
-                    <div key={idx} className="flex justify-between items-start border-b border-slate-50 pb-2 gap-4">
-                      <span className="text-slate-500 font-medium whitespace-nowrap">{item.label}</span>
-                      <span className="font-semibold text-slate-800 text-right">{item.value}</span>
+                    <div key={idx} className="flex justify-between items-start border-b border-slate-50 dark:border-slate-900 pb-2 gap-4">
+                      <span className="text-slate-500 dark:text-gray-400 font-medium whitespace-nowrap">{item.label}</span>
+                      <span className="font-semibold text-slate-800 dark:text-white text-right">{item.value}</span>
                     </div>
                   ))}
                 </div>
               )}
  
-              <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 mt-6 text-xs text-slate-600 leading-relaxed">
-                <span className="font-bold text-primary block mb-1">Garansi Kualitas Material Resmi:</span>
+              <div className="bg-primary/5 dark:bg-slate-900/40 p-4 rounded-xl border border-primary/10 dark:border-slate-800 mt-6 text-xs text-slate-600 dark:text-gray-300 leading-relaxed">
+                <span className="font-bold text-primary dark:text-accent block mb-1">Garansi Kualitas Material Resmi:</span>
                 Spesifikasi di atas merupakan jaminan mutu resmi dari Nara Home Pamulang demi mewujudkan investasi properti premium jangka panjang Anda.
               </div>
             </div>
@@ -1341,15 +1439,15 @@ export default function App() {
 
 
       {/* INTERACTIVE SITE PLAN & UNIT AVAILABILITY GRID (Kavling 01 - 19) */}
-      <section className="py-20 bg-slate-50 border-y border-gray-100 text-left">
+      <section className="py-20 bg-slate-50 dark:bg-slate-900 border-y border-gray-100 dark:border-slate-800 text-left transition-colors duration-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest block">Unit Availability</span>
-            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 dark:text-white font-bold leading-tight">
               Peta Unit & Status Ketersediaan Kavling
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Nara Home Pamulang dibangun secara eksklusif hanya <strong>22 Unit</strong>. Pilih nomor kavling idaman Anda di bawah ini untuk melihat detail rancangan arsitektur dan spesifikasi unit secara instan.
             </p>
           </div>
@@ -1358,10 +1456,10 @@ export default function App() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {PROPERTY_CONFIG.units.map((unit) => {
               const statusColors = {
-                Available: { bg: "bg-emerald-50 text-emerald-700 border-emerald-150", text: "Tersedia" },
-                Reserved: { bg: "bg-amber-50 text-amber-700 border-amber-150", text: "Dipesan" },
-                Sold: { bg: "bg-slate-100 text-slate-400 border-slate-200", text: "Terjual" },
-                "Coming Soon": { bg: "bg-blue-50 text-blue-600 border-blue-150", text: "Coming Soon" }
+                Available: { bg: "bg-emerald-50 dark:bg-emerald-950/45 text-emerald-700 dark:text-emerald-400 border-emerald-150 dark:border-emerald-900", text: "Tersedia" },
+                Reserved: { bg: "bg-amber-50 dark:bg-amber-950/45 text-amber-700 dark:text-amber-400 border-amber-150 dark:border-amber-900", text: "Dipesan" },
+                Sold: { bg: "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700", text: "Terjual" },
+                "Coming Soon": { bg: "bg-blue-50 dark:bg-blue-950/45 text-blue-600 dark:text-blue-400 border-blue-150 dark:border-blue-900", text: "Coming Soon" }
               };
               const badge = statusColors[unit.status as keyof typeof statusColors];
 
@@ -1369,39 +1467,39 @@ export default function App() {
                 <div
                   key={unit.id}
                   onClick={() => setSelectedUnit(unit)}
-                  className={`bg-white rounded-xl p-4 border transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between ${
-                    selectedUnit?.id === unit.id ? "border-accent ring-2 ring-accent/20" : "border-gray-150"
+                  className={`bg-white dark:bg-slate-950 rounded-xl p-4 border transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between ${
+                    selectedUnit?.id === unit.id ? "border-accent ring-2 ring-accent/20" : "border-gray-150 dark:border-slate-800"
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="font-serif font-bold text-slate-900 text-sm">{unit.number}</span>
+                      <span className="font-serif font-bold text-slate-900 dark:text-white text-sm">{unit.number}</span>
                       <div className="flex flex-col items-end gap-1">
                         <span className={`text-[9px] px-2 py-0.5 rounded-full border font-bold uppercase tracking-wider ${badge.bg}`}>
                           {badge.text}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded font-medium border ${
                           unit.isReady 
-                            ? "bg-emerald-50 text-emerald-800 border-emerald-200" 
-                            : "bg-amber-50 text-amber-800 border-amber-200"
+                            ? "bg-emerald-50 dark:bg-emerald-950/45 text-emerald-800 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900" 
+                            : "bg-amber-50 dark:bg-amber-950/45 text-amber-800 dark:text-amber-400 border-amber-200 dark:border-amber-900"
                         }`}>
                           {unit.isReady ? "Ready (Contoh)" : "Inden"}
                         </span>
                       </div>
                     </div>
-                    <div className="space-y-1 text-[11px] text-slate-500">
+                    <div className="space-y-1 text-[11px] text-slate-500 dark:text-gray-400">
                       <div className="flex justify-between">
                         <span>Luas Tanah:</span>
-                        <span className="font-semibold text-slate-700">{unit.specs.land} m²</span>
+                        <span className="font-semibold text-slate-700 dark:text-gray-250">{unit.specs.land} m²</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Luas Bangunan:</span>
-                        <span className="font-semibold text-slate-700">{unit.specs.building} m²</span>
+                        <span className="font-semibold text-slate-700 dark:text-gray-250">{unit.specs.building} m²</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-accent">
+                  <div className="mt-4 pt-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-accent">
                     <span>Lihat Detail</span>
                     <span>→</span>
                   </div>
@@ -1410,8 +1508,8 @@ export default function App() {
             })}
           </div>
 
-          <div className="mt-8 bg-white border border-gray-150 rounded-xl p-4 text-center max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
-            <span className="text-xs text-slate-500 font-light">
+          <div className="mt-8 bg-white dark:bg-slate-950 border border-gray-150 dark:border-slate-800 rounded-xl p-4 text-center max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
+            <span className="text-xs text-slate-500 dark:text-gray-400 font-light">
               *Kavling bertanda <strong>Tersedia</strong> dapat di-booking hari ini. Hubungi konsultan pemasaran kami untuk verifikasi ketersediaan terbaru.
             </span>
             <button
@@ -1427,32 +1525,32 @@ export default function App() {
         {/* Selected Unit Modal / Detail Overlay */}
         {selectedUnit && (
           <div className="fixed inset-0 z-55 bg-black/75 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-100 w-full max-w-4xl max-h-[90vh] flex flex-col">
-              <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-cream/30">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] flex flex-col">
+              <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-cream/30 dark:bg-slate-950/40">
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                  <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white flex flex-wrap items-center gap-2">
                     <span>Spesifikasi Kavling: {selectedUnit.number}</span>
                     <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-bold uppercase tracking-wider ${
-                      selectedUnit.status === "Available" ? "bg-emerald-50 text-emerald-700 border-emerald-150" :
-                      selectedUnit.status === "Reserved" ? "bg-amber-50 text-amber-700 border-amber-150" :
-                      selectedUnit.status === "Coming Soon" ? "bg-blue-50 text-blue-600 border-blue-150" :
-                      "bg-slate-100 text-slate-400 border-slate-200"
+                      selectedUnit.status === "Available" ? "bg-emerald-50 dark:bg-emerald-950/45 text-emerald-700 dark:text-emerald-400 border-emerald-150 dark:border-emerald-900" :
+                      selectedUnit.status === "Reserved" ? "bg-amber-50 dark:bg-amber-950/45 text-amber-700 dark:text-amber-400 border-amber-150 dark:border-amber-900" :
+                      selectedUnit.status === "Coming Soon" ? "bg-blue-50 dark:bg-blue-950/45 text-blue-600 dark:text-blue-400 border-blue-150 dark:border-blue-900" :
+                      "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700"
                     }`}>
                       {selectedUnit.status === "Available" ? "Tersedia" : selectedUnit.status === "Reserved" ? "Dipesan" : selectedUnit.status === "Coming Soon" ? "Coming Soon" : "Terjual"}
                     </span>
                     <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-bold uppercase tracking-wider ${
                       selectedUnit.isReady 
-                        ? "bg-emerald-50 text-emerald-800 border-emerald-200" 
-                        : "bg-amber-50 text-amber-800 border-amber-200"
+                        ? "bg-emerald-50 dark:bg-emerald-950/45 text-emerald-800 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900" 
+                        : "bg-amber-50 dark:bg-amber-950/45 text-amber-800 dark:text-amber-400 border-amber-200 dark:border-amber-900"
                     }`}>
                       {selectedUnit.isReady ? "Ready (Rumah Contoh)" : "Pembangunan Inden"}
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Tipe {selectedUnit.specs.building}/{selectedUnit.specs.land} • 2 Lantai Eksklusif</p>
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Tipe {selectedUnit.specs.building}/{selectedUnit.specs.land} • 2 Lantai Eksklusif</p>
                 </div>
                 <button
                   onClick={() => setSelectedUnit(null)}
-                  className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-2 text-slate-400 dark:text-gray-400 hover:text-slate-600 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <X className="h-6 w-6" />
                 </button>
@@ -1462,7 +1560,7 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   
                   {/* Left Side: Layout Detail Image */}
-                  <div className="relative aspect-[3/4] md:aspect-auto md:h-[450px] bg-slate-50 border border-gray-150 rounded-xl overflow-hidden flex items-center justify-center p-4">
+                  <div className="relative aspect-[3/4] md:aspect-auto md:h-[450px] bg-slate-50 dark:bg-slate-950 border border-gray-150 dark:border-slate-800 rounded-xl overflow-hidden flex items-center justify-center p-4">
                     <SafeImage
                       src={selectedUnit.image}
                       fallbackSrc="/assets/images/nara_exterior_hero_1783879429976.jpg"
@@ -1477,45 +1575,45 @@ export default function App() {
                   {/* Right Side: Specifications & CTA */}
                   <div className="space-y-6 text-left">
                     <div>
-                      <h4 className="font-serif text-xl font-bold text-slate-900">Rincian Luas & Tata Ruang</h4>
-                      <p className="text-xs text-slate-500 mt-1">Konstruksi kokoh dengan material premium pilihan.</p>
+                      <h4 className="font-serif text-xl font-bold text-slate-900 dark:text-white">Rincian Luas & Tata Ruang</h4>
+                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Konstruksi kokoh dengan material premium pilihan.</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-cream/40 border border-gray-100 p-3.5 rounded-xl">
-                        <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Luas Tanah</span>
-                        <span className="font-serif text-lg font-bold text-primary block mt-0.5">{selectedUnit.specs.land} m²</span>
-                        <p className="text-[10px] text-slate-400 mt-1">Panjang x Lebar ideal</p>
+                      <div className="bg-cream/40 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 p-3.5 rounded-xl">
+                        <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block">Luas Tanah</span>
+                        <span className="font-serif text-lg font-bold text-primary dark:text-accent block mt-0.5">{selectedUnit.specs.land} m²</span>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Panjang x Lebar ideal</p>
                       </div>
-                      <div className="bg-cream/40 border border-gray-100 p-3.5 rounded-xl">
-                        <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Luas Bangunan</span>
-                        <span className="font-serif text-lg font-bold text-primary block mt-0.5">{selectedUnit.specs.building} m²</span>
-                        <p className="text-[10px] text-slate-400 mt-1">2 Lantai fungsional</p>
+                      <div className="bg-cream/40 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 p-3.5 rounded-xl">
+                        <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-wider block">Luas Bangunan</span>
+                        <span className="font-serif text-lg font-bold text-primary dark:text-accent block mt-0.5">{selectedUnit.specs.building} m²</span>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">2 Lantai fungsional</p>
                       </div>
                     </div>
 
-                    <div className="space-y-3 bg-slate-50 border border-gray-150 p-4 rounded-xl text-xs text-slate-600">
-                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div className="space-y-3 bg-slate-50 dark:bg-slate-950 border border-gray-150 dark:border-slate-800 p-4 rounded-xl text-xs text-slate-600 dark:text-gray-350">
+                      <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2">
                         <span className="flex items-center gap-1.5"><Bed className="h-4 w-4 text-accent" /> Kamar Tidur</span>
-                        <span className="font-bold text-slate-800">3 Kamar Tidur Suite</span>
+                        <span className="font-bold text-slate-800 dark:text-white">3 Kamar Tidur Suite</span>
                       </div>
-                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                      <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2">
                         <span className="flex items-center gap-1.5"><Bath className="h-4 w-4 text-accent" /> Kamar Mandi</span>
-                        <span className="font-bold text-slate-800">2 Toilet Sanitary Toto</span>
+                        <span className="font-bold text-slate-800 dark:text-white">2 Toilet Sanitary Toto</span>
                       </div>
-                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                      <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2">
                         <span className="flex items-center gap-1.5"><Car className="h-4 w-4 text-accent" /> Carport Mobil</span>
-                        <span className="font-bold text-slate-800">1 Carport Luas + Kanopi</span>
+                        <span className="font-bold text-slate-800 dark:text-white">1 Carport Luas + Kanopi</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="flex items-center gap-1.5"><Zap className="h-4 w-4 text-accent" /> Daya Listrik</span>
-                        <span className="font-bold text-slate-800">2200 VA (Token)</span>
+                        <span className="font-bold text-slate-800 dark:text-white">2200 VA (Token)</span>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-gray-100 space-y-4">
+                    <div className="pt-4 border-t border-gray-100 dark:border-slate-800 space-y-4">
                       <div className="flex items-baseline justify-between">
-                        <span className="text-xs text-slate-500 font-medium">Harga Perkiraan Unit:</span>
+                        <span className="text-xs text-slate-500 dark:text-gray-400 font-medium">Harga Perkiraan Unit:</span>
                         <span className="font-serif text-2xl font-bold text-accent">{selectedUnit.price}</span>
                       </div>
                       
@@ -1552,16 +1650,16 @@ export default function App() {
       <section
         id="gallery"
         ref={sectionRefs.gallery}
-        className="py-20 md:py-24 bg-white"
+        className="py-20 md:py-24 bg-white dark:bg-slate-950 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Real marketing assets</span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
               Galeri Kunjungan Show Unit Nara
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Nikmati keindahan detail pengerjaan finishing, arsitektur tropis, dan tata letak interior yang megah.
             </p>
           </div>
@@ -1575,7 +1673,7 @@ export default function App() {
                 className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
                   activeGalleryTab === tab
                     ? "bg-primary text-white"
-                    : "bg-cream text-slate-600 hover:text-slate-900 border border-gray-100"
+                    : "bg-cream dark:bg-slate-900 text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white border border-gray-100 dark:border-slate-800"
                 }`}
               >
                 {tab === "all" ? "Semua" : tab.replace("-", " ")}
@@ -1588,7 +1686,7 @@ export default function App() {
             {filteredGallery.map((item, idx) => (
               <div
                 key={item.id}
-                className={`relative group overflow-hidden rounded-2xl shadow-md border border-slate-50 transform hover:-translate-y-1 transition-all duration-300 ${
+                className={`relative group overflow-hidden rounded-2xl shadow-md border border-slate-50 dark:border-slate-900 transform hover:-translate-y-1 transition-all duration-300 ${
                   idx === 0 ? "md:col-span-2 lg:row-span-1" : ""
                 }`}
               >
@@ -1619,10 +1717,10 @@ export default function App() {
             ))}
           </div>
 
-          <div className="mt-12 bg-cream p-8 rounded-2xl border border-gray-100 text-center max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="mt-12 bg-cream dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 text-center max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-left">
-              <h4 className="font-serif text-xl font-bold text-slate-900">Ingin Mengunjungi Rumah Contoh Kami?</h4>
-              <p className="text-slate-600 text-xs sm:text-sm mt-1">Kami menyediakan {PROPERTY_CONFIG.showHousesCount} Show Unit siap visit gratis setiap hari mulai jam 08:00 - 18:00 WIB.</p>
+              <h4 className="font-serif text-xl font-bold text-slate-900 dark:text-white">Ingin Mengunjungi Rumah Contoh Kami?</h4>
+              <p className="text-slate-600 dark:text-gray-300 text-xs sm:text-sm mt-1">Kami menyediakan {PROPERTY_CONFIG.showHousesCount} Show Unit siap visit gratis setiap hari mulai jam 08:00 - 18:00 WIB.</p>
             </div>
             <button
               onClick={() => setShowBookingModal(true)}
@@ -1699,16 +1797,16 @@ export default function App() {
       <section
         id="location"
         ref={sectionRefs.location}
-        className="py-20 md:py-24 bg-cream"
+        className="py-20 md:py-24 bg-cream dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Konektivitas Strategis</span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
               Aksesbilitas Sempurna di Tangerang Selatan
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Berlokasi di Jl. Kalimantan No.24, Benda Baru, Pamulang. Akses langsung menuju tol BSD-Bintaro-Jakarta.
             </p>
           </div>
@@ -1716,8 +1814,8 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
             {/* Embedded Google Map Iframe - 7 Columns */}
-            <div className="lg:col-span-7 bg-white p-4 rounded-2xl border border-gray-100 shadow-lg flex flex-col justify-between h-[450px] lg:h-auto min-h-[350px]">
-              <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100 border border-gray-50 relative">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-lg flex flex-col justify-between h-[450px] lg:h-auto min-h-[350px]">
+              <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-900 border border-gray-50 dark:border-slate-800 relative">
                 <iframe
                   title="Peta Lokasi Nara Home Pamulang"
                   src={PROPERTY_CONFIG.googleMapsIframeUrl}
@@ -1732,11 +1830,11 @@ export default function App() {
               </div>
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
                 <div>
-                  <p className="text-xs font-bold text-slate-900 flex items-center gap-1">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
                     <MapPin className="h-4 w-4 text-accent" />
                     <span>Jl. Kalimantan No.24, Benda Baru, Pamulang</span>
                   </p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Sangat dekat dengan Universitas Pamulang, perbatasan BSD & Tangerang Selatan.</p>
+                  <p className="text-[10px] text-slate-500 dark:text-gray-400 mt-0.5">Sangat dekat dengan Universitas Pamulang, perbatasan BSD & Tangerang Selatan.</p>
                 </div>
                 <a
                   href={PROPERTY_CONFIG.googleMapsDirectionsUrl}
@@ -1751,15 +1849,15 @@ export default function App() {
             </div>
 
             {/* Travel Times Landmarks - 5 Columns */}
-            <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-lg text-left flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-white dark:bg-slate-950 p-6 sm:p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-lg text-left flex flex-col justify-between">
               <div>
-                <h3 className="font-serif text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                   <Map className="h-5 w-5 text-primary" />
                   <span>Jarak & Waktu Tempuh Terdekat</span>
                 </h3>
 
                 {/* Facilities Tab Switches */}
-                <div className="flex flex-wrap gap-1 mb-6 bg-cream p-1 rounded-lg">
+                <div className="flex flex-wrap gap-1 mb-6 bg-cream dark:bg-slate-900 p-1 rounded-lg">
                   {PROPERTY_CONFIG.nearbyFacilities.map((fac) => (
                     <button
                       key={fac.category}
@@ -1767,7 +1865,7 @@ export default function App() {
                       className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider transition-colors ${
                         activeNearbyCategory === fac.category
                           ? "bg-primary text-white"
-                          : "text-slate-600 hover:text-slate-900"
+                          : "text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
                       {fac.category}
@@ -1780,12 +1878,12 @@ export default function App() {
                   {PROPERTY_CONFIG.nearbyFacilities
                     .find(fac => fac.category === activeNearbyCategory)
                     ?.places.map((place, idx) => (
-                      <div key={idx} className="flex items-center justify-between border-b border-gray-50 pb-2.5">
+                      <div key={idx} className="flex items-center justify-between border-b border-gray-50 dark:border-slate-900 pb-2.5">
                         <div className="flex items-center space-x-3">
                           <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                          <span className="text-xs sm:text-sm font-medium text-slate-800">{place.name}</span>
+                          <span className="text-xs sm:text-sm font-medium text-slate-800 dark:text-gray-250">{place.name}</span>
                         </div>
-                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                        <span className="bg-primary/10 text-primary dark:text-accent text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
                           {place.time}
                         </span>
                       </div>
@@ -1793,8 +1891,8 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-100 text-xs text-slate-500 leading-relaxed">
-                <span className="font-bold text-slate-900 block mb-1">Catatan Kecepatan Akses:</span>
+              <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800 text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
+                <span className="font-bold text-slate-900 dark:text-white block mb-1">Catatan Kecepatan Akses:</span>
                 *Waktu tempuh di atas dihitung berdasarkan berkendara normal pada jam non-sibuk menggunakan Google Maps Navigation.
               </div>
             </div>
@@ -1808,16 +1906,16 @@ export default function App() {
       <section
         id="facilities"
         ref={sectionRefs.facilities}
-        className="py-20 md:py-24 bg-white"
+        className="py-20 md:py-24 bg-white dark:bg-slate-950 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Premium Cluster Facilities</span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
               Fasilitas Keamanan & Kenyamanan Internal
             </h2>
-            <p className="text-slate-500 text-sm sm:text-base">
+            <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">
               Nikmati fasilitas penunjang lengkap yang eksklusif hanya untuk para penghuni Nara Home Pamulang.
             </p>
           </div>
@@ -1839,14 +1937,14 @@ export default function App() {
               return (
                 <div
                   key={idx}
-                  className="bg-cream p-6 rounded-xl border border-gray-100 shadow-sm text-left hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                  className="bg-cream dark:bg-slate-900 p-6 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm text-left hover:shadow-md transition-all duration-300 flex flex-col justify-between"
                 >
                   <div className="bg-primary text-white p-2.5 rounded-lg inline-block w-fit mb-4">
                     <IconComp className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-900 text-sm mb-1 tracking-wide">{fac.name}</h4>
-                    <p className="text-slate-500 text-[11px] font-light leading-relaxed">{fac.desc}</p>
+                    <h4 className="font-serif font-bold text-slate-900 dark:text-white text-sm mb-1 tracking-wide">{fac.name}</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-[11px] font-light leading-relaxed">{fac.desc}</p>
                   </div>
                 </div>
               );
@@ -1948,14 +2046,14 @@ export default function App() {
       <section
         id="developer"
         ref={sectionRefs.developer}
-        className="py-20 md:py-24 bg-white"
+        className="py-20 md:py-24 bg-white dark:bg-slate-950 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Aerial/Trust Image Left */}
             <div className="lg:col-span-5 relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-gray-100 bg-cream">
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-slate-800 bg-cream dark:bg-slate-900">
                 <img
                   src="https://images.unsplash.com/photo-1592595896551-12b371d546d5?auto=format&fit=crop&w=800&q=80"
                   alt="Aerial Developer Construction Site Visit"
@@ -1966,9 +2064,9 @@ export default function App() {
               </div>
               
               {/* Floating Credential Box */}
-              <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-xl border border-gray-150 shadow-xl text-left">
-                <p className="font-serif font-bold text-slate-900 text-sm">Developer Berkomitmen Tinggi</p>
-                <p className="text-slate-500 text-xs mt-1">Mengutamakan penyelesaian konstruksi tepat waktu dengan kualitas fisik bangunan 100% real.</p>
+              <div className="absolute bottom-6 left-6 right-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-5 rounded-xl border border-gray-150 dark:border-slate-800 shadow-xl text-left">
+                <p className="font-serif font-bold text-slate-900 dark:text-white text-sm">Developer Berkomitmen Tinggi</p>
+                <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">Mengutamakan penyelesaian konstruksi tepat waktu dengan kualitas fisik bangunan 100% real.</p>
               </div>
             </div>
 
@@ -1976,37 +2074,37 @@ export default function App() {
             <div className="lg:col-span-7 text-left space-y-6">
               <span className="text-accent text-xs font-bold uppercase tracking-widest block">Pengembang Berkomitmen Tinggi</span>
               
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white font-bold leading-tight">
                 Dipersembahkan Dengan Integritas oleh Nara Home Pamulang
               </h2>
 
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Nara Home Pamulang dikembangkan atas dasar integritas tinggi, komitmen terhadap kualitas, dan kepuasan pelanggan yang mutlak. Kami percaya bahwa perumahan yang baik adalah perumahan yang dibangun menggunakan hati dan kejujuran spesifikasi.
+              <p className="text-slate-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
+                Nara Home Pamulang telah dikembangkan atas dasar integritas tinggi, komitmen terhadap kualitas, dan kepuasan pelanggan yang mutlak. Kami percaya bahwa perumahan yang baik adalah perumahan yang dibangun menggunakan hati dan kejujuran spesifikasi.
               </p>
 
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
                 Nara Home Pamulang telah mengantongi semua aspek perizinan legalitas krusial. Hak kepemilikan tanah dijamin aman tanpa hambatan sengketa di masa mendatang.
               </p>
 
               {/* Trust Indicators Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div className="bg-cream p-4 rounded-xl border border-gray-100 text-center">
-                  <span className="font-serif text-2xl font-bold text-primary block">100%</span>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Legalitas Aman</span>
+                <div className="bg-cream dark:bg-slate-900 p-4 rounded-xl border border-gray-100 dark:border-slate-800 text-center">
+                  <span className="font-serif text-2xl font-bold text-primary dark:text-accent block">100%</span>
+                  <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold">Legalitas Aman</span>
                 </div>
-                <div className="bg-cream p-4 rounded-xl border border-gray-100 text-center">
-                  <span className="font-serif text-2xl font-bold text-primary block">SHM</span>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Pecah Per Kavling</span>
+                <div className="bg-cream dark:bg-slate-900 p-4 rounded-xl border border-gray-100 dark:border-slate-800 text-center">
+                  <span className="font-serif text-2xl font-bold text-primary dark:text-accent block">SHM</span>
+                  <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold">Pecah Per Kavling</span>
                 </div>
-                <div className="bg-cream p-4 rounded-xl border border-gray-100 text-center">
-                  <span className="font-serif text-2xl font-bold text-primary block">Bank Partner</span>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Nasional Terkemuka</span>
+                <div className="bg-cream dark:bg-slate-900 p-4 rounded-xl border border-gray-100 dark:border-slate-800 text-center">
+                  <span className="font-serif text-2xl font-bold text-primary dark:text-accent block">Bank Partner</span>
+                  <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold">Nasional Terkemuka</span>
                 </div>
               </div>
 
               {/* Legal Note Accordion look */}
-              <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 text-xs text-slate-600">
-                <span className="font-bold text-primary block mb-1">Informasi Hukum & Perizinan:</span>
+              <div className="bg-primary/5 dark:bg-slate-900/40 p-4 rounded-xl border border-primary/10 dark:border-slate-800 text-xs text-slate-600 dark:text-gray-300">
+                <span className="font-bold text-primary dark:text-accent block mb-1">Informasi Hukum & Perizinan:</span>
                 Seluruh unit di cluster Nara Home Pamulang telah lolos verifikasi Badan Pertanahan Nasional (BPN), dilengkapi persetujuan PBG (Persetujuan Bangunan Gedung) / IMB, dan memiliki izin lingkungan setempat yang sah.
               </div>
 
@@ -2029,16 +2127,16 @@ export default function App() {
       <section
         id="faq"
         ref={sectionRefs.faq}
-        className="py-20 md:py-24 bg-cream border-t border-gray-100"
+        className="py-20 md:py-24 bg-cream dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 transition-colors duration-500"
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
           
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest text-center block">Frequently Asked Questions</span>
-            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 font-bold leading-tight text-center">
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 dark:text-white font-bold leading-tight text-center">
               Pertanyaan yang Sering Diajukan (FAQ)
             </h2>
-            <p className="text-slate-500 text-sm text-center">
+            <p className="text-slate-500 dark:text-gray-400 text-sm text-center">
               Temukan jawaban cepat atas pertanyaan-pertanyaan administratif, keuangan, dan lokasi seputar Nara Home Pamulang.
             </p>
           </div>
@@ -2049,11 +2147,11 @@ export default function App() {
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300"
+                  className="bg-white dark:bg-slate-950 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-300"
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="w-full py-5 px-6 text-left flex items-center justify-between font-serif font-bold text-slate-900 text-sm sm:text-base hover:text-accent transition-colors focus:outline-none"
+                    className="w-full py-5 px-6 text-left flex items-center justify-between font-serif font-bold text-slate-900 dark:text-white text-sm sm:text-base hover:text-accent transition-colors focus:outline-none"
                   >
                     <span>{faq.q}</span>
                     {isOpen ? (
@@ -2065,10 +2163,10 @@ export default function App() {
                   
                   <div
                     className={`transition-all duration-300 ease-in-out ${
-                      isOpen ? "max-h-[300px] border-t border-gray-50 p-6 bg-cream/30" : "max-h-0 pointer-events-none opacity-0"
+                      isOpen ? "max-h-[300px] border-t border-gray-50 dark:border-slate-800 p-6 bg-cream/30 dark:bg-slate-900/40" : "max-h-0 pointer-events-none opacity-0"
                     }`}
                   >
-                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-light">
+                    <p className="text-slate-600 dark:text-gray-300 text-xs sm:text-sm leading-relaxed font-light">
                       {faq.a}
                     </p>
                   </div>
@@ -2078,11 +2176,11 @@ export default function App() {
           </div>
 
           {/* Prompt to ask custom FAQ */}
-          <div className="mt-8 text-center bg-white p-6 rounded-xl border border-gray-100 shadow-sm max-w-2xl mx-auto">
-            <p className="text-slate-600 text-xs">Punya pertanyaan spesifik lainnya tentang skema KPR, cash bertahap, atau diskon harga perdana?</p>
+          <div className="mt-8 text-center bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-gray-300 text-xs">Punya pertanyaan spesifik lainnya tentang skema KPR, cash bertahap, atau diskon harga perdana?</p>
             <button
               onClick={() => triggerWhatsApp("Halo marketing, saya ingin bertanya tentang Nara Home Pamulang.")}
-              className="text-primary hover:text-accent font-bold text-xs uppercase tracking-wider mt-2 inline-flex items-center gap-1.5 focus:outline-none"
+              className="text-primary dark:text-accent hover:text-accent font-bold text-xs uppercase tracking-wider mt-2 inline-flex items-center gap-1.5 focus:outline-none"
             >
               <span>Tanyakan Langsung Via WhatsApp</span>
               <ExternalLink className="h-4.5 w-4.5" />
@@ -2094,15 +2192,15 @@ export default function App() {
 
 
       {/* 13. TESTIMONIALS (3 CUSTOMER CARDS WITH AVATARS) */}
-      <section className="py-20 bg-white border-b border-gray-100">
+      <section className="py-20 bg-white dark:bg-slate-950 border-b border-gray-100 dark:border-slate-800 transition-colors duration-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-accent text-xs font-bold uppercase tracking-widest text-center block">Testimonials</span>
-            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 font-bold leading-tight text-center">
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 dark:text-white font-bold leading-tight text-center">
               Apa Kata Mereka Tentang Nara Home
             </h2>
-            <p className="text-slate-500 text-sm text-center">
+            <p className="text-slate-500 dark:text-gray-400 text-sm text-center">
               Ulasan jujur dari keluarga muda dan investor pembeli pertama unit eksklusif Nara Home Pamulang.
             </p>
           </div>
@@ -2111,7 +2209,7 @@ export default function App() {
             {PROPERTY_CONFIG.testimonials.map((test, idx) => (
               <div
                 key={idx}
-                className="bg-cream p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between"
+                className="bg-cream dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div className="flex space-x-1 text-accent">
@@ -2119,18 +2217,18 @@ export default function App() {
                       <span key={i} className="text-sm">★</span>
                     ))}
                   </div>
-                  <p className="text-slate-600 text-xs sm:text-sm font-light leading-relaxed italic">
+                  <p className="text-slate-600 dark:text-gray-300 text-xs sm:text-sm font-light leading-relaxed italic">
                     "{test.text}"
                   </p>
                 </div>
 
-                <div className="flex items-center space-x-3 mt-6 pt-4 border-t border-gray-100">
+                <div className="flex items-center space-x-3 mt-6 pt-4 border-t border-gray-100 dark:border-slate-800">
                   <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
                     {test.avatar}
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-900 text-sm">{test.name}</h4>
-                    <p className="text-slate-500 text-[10px] font-medium">{test.role}</p>
+                    <h4 className="font-serif font-bold text-slate-900 dark:text-white text-sm">{test.name}</h4>
+                    <p className="text-slate-500 dark:text-gray-400 text-[10px] font-medium">{test.role}</p>
                   </div>
                 </div>
               </div>
@@ -2145,7 +2243,7 @@ export default function App() {
       <section
         id="contact"
         ref={sectionRefs.contact}
-        className="py-20 md:py-24 bg-cream"
+        className="py-20 md:py-24 bg-cream dark:bg-slate-900 transition-colors duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
@@ -2154,10 +2252,10 @@ export default function App() {
             <div className="lg:col-span-6 space-y-6 flex flex-col justify-between">
               <div>
                 <span className="text-accent text-xs font-bold uppercase tracking-widest block">Direct Connection</span>
-                <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 font-bold leading-tight mt-2">
+                <h2 className="font-serif text-3xl sm:text-4xl text-slate-900 dark:text-white font-bold leading-tight mt-2">
                   Hubungi Kantor Pemasaran Resmi Kami
                 </h2>
-                <p className="text-slate-600 text-sm leading-relaxed font-light mt-3">
+                <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed font-light mt-3">
                   Punya pertanyaan seputar ketersediaan unit, simulasi KPR, atau ingin membuat janji site visit hari ini? Kirimkan pesan singkat, tim marketing ramah kami akan membalas secepat mungkin.
                 </p>
               </div>
@@ -2169,8 +2267,8 @@ export default function App() {
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Alamat Lokasi Cluster</h4>
-                    <p className="text-slate-600 text-xs mt-1 leading-relaxed">{PROPERTY_CONFIG.address}</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Alamat Lokasi Cluster</h4>
+                    <p className="text-slate-600 dark:text-gray-350 text-xs mt-1 leading-relaxed">{PROPERTY_CONFIG.address}</p>
                   </div>
                 </div>
 
@@ -2179,9 +2277,9 @@ export default function App() {
                     <Phone className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">WhatsApp Marketing Nonstop</h4>
-                    <p className="text-slate-600 text-xs mt-1 leading-relaxed">
-                      <a href={`tel:${PROPERTY_CONFIG.whatsappNumber}`} className="hover:underline font-bold text-primary">{PROPERTY_CONFIG.whatsappNumber}</a> (Support Chat & Call)
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">WhatsApp Marketing Nonstop</h4>
+                    <p className="text-slate-600 dark:text-gray-350 text-xs mt-1 leading-relaxed">
+                      <a href={`tel:${PROPERTY_CONFIG.whatsappNumber}`} className="hover:underline font-bold text-primary dark:text-accent">{PROPERTY_CONFIG.whatsappNumber}</a> (Support Chat & Call)
                     </p>
                   </div>
                 </div>
@@ -2191,8 +2289,8 @@ export default function App() {
                     <Clock className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-slate-950 text-sm">Jam Operasional Show Unit</h4>
-                    <p className="text-slate-600 text-xs mt-1 leading-relaxed">Buka setiap hari (termasuk Sabtu, Minggu, & hari libur nasional) • Pukul 08:00 - 18:00 WIB</p>
+                    <h4 className="font-serif font-bold text-slate-950 dark:text-white text-sm">Jam Operasional Show Unit</h4>
+                    <p className="text-slate-600 dark:text-gray-350 text-xs mt-1 leading-relaxed">Buka setiap hari (termasuk Sabtu, Minggu, & hari libur nasional) • Pukul 08:00 - 18:00 WIB</p>
                   </div>
                 </div>
               </div>
@@ -2207,7 +2305,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => triggerWhatsApp("Halo Nara Home Pamulang, saya mau tanya harga ruko / cluster perumahan terupdate.")}
-                  className="border border-accent text-slate-800 hover:bg-accent hover:text-white font-semibold py-3.5 px-6 rounded text-xs uppercase tracking-wider transition-colors text-center flex items-center justify-center space-x-2"
+                  className="border border-accent text-slate-800 dark:text-white hover:bg-accent hover:text-white font-semibold py-3.5 px-6 rounded text-xs uppercase tracking-wider transition-colors text-center flex items-center justify-center space-x-2"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Minta Pricelist Terbaru</span>
@@ -2216,15 +2314,15 @@ export default function App() {
             </div>
 
             {/* Quick Interactive Map right - 6 Columns */}
-            <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-lg flex flex-col justify-between">
+            <div className="lg:col-span-6 bg-white dark:bg-slate-950 p-6 sm:p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-lg flex flex-col justify-between">
               <div>
-                <h3 className="font-serif text-lg font-bold text-slate-950 mb-2">Formulir Pertanyaan & Site Visit</h3>
-                <p className="text-slate-500 text-xs mb-6">Silakan lengkapi formulir di bawah ini untuk mendapatkan antrean site visit resmi tanpa dipungut biaya apapun.</p>
+                <h3 className="font-serif text-lg font-bold text-slate-950 dark:text-white mb-2">Formulir Pertanyaan & Site Visit</h3>
+                <p className="text-slate-500 dark:text-gray-400 text-xs mb-6">Silakan lengkapi formulir di bawah ini untuk mendapatkan antrean site visit resmi tanpa dipungut biaya apapun.</p>
               </div>
 
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="form_name" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap*</label>
+                  <label htmlFor="form_name" className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">Nama Lengkap*</label>
                   <input
                     id="form_name"
                     type="text"
@@ -2232,12 +2330,12 @@ export default function App() {
                     placeholder="Contoh: Budi Santoso"
                     value={bookingName}
                     onChange={(e) => setBookingName(e.target.value)}
-                    className="w-full px-4 py-2 text-sm bg-cream border border-gray-200 rounded focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2 text-sm bg-cream dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded focus:outline-none focus:border-accent text-slate-800 dark:text-white transition-colors"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="form_phone" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nomor WhatsApp*</label>
+                  <label htmlFor="form_phone" className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">Nomor WhatsApp*</label>
                   <input
                     id="form_phone"
                     type="tel"
@@ -2245,30 +2343,30 @@ export default function App() {
                     placeholder="Contoh: 08123456789"
                     value={bookingPhone}
                     onChange={(e) => setBookingPhone(e.target.value)}
-                    className="w-full px-4 py-2 text-sm bg-cream border border-gray-200 rounded focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2 text-sm bg-cream dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded focus:outline-none focus:border-accent text-slate-800 dark:text-white transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="form_date" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Rencana Tanggal Visit</label>
+                    <label htmlFor="form_date" className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">Rencana Tanggal Visit</label>
                     <input
                       id="form_date"
                       type="date"
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="w-full px-4 py-2 text-sm bg-cream border border-gray-200 rounded focus:outline-none focus:border-accent transition-colors text-slate-600"
+                      className="w-full px-4 py-2 text-sm bg-cream dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded focus:outline-none focus:border-accent text-slate-800 dark:text-white transition-colors"
                     />
                   </div>
                   <div>
-                    <label htmlFor="form_msg" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Catatan Tambahan</label>
+                    <label htmlFor="form_msg" className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">Catatan Tambahan</label>
                     <input
                       id="form_msg"
                       type="text"
                       placeholder="e.g. Ingin jam 10 pagi, KPR info"
                       value={bookingMessage}
                       onChange={(e) => setBookingMessage(e.target.value)}
-                      className="w-full px-4 py-2 text-sm bg-cream border border-gray-200 rounded focus:outline-none focus:border-accent transition-colors"
+                      className="w-full px-4 py-2 text-sm bg-cream dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded focus:outline-none focus:border-accent text-slate-800 dark:text-white transition-colors"
                     />
                   </div>
                 </div>
@@ -2282,7 +2380,7 @@ export default function App() {
                 </button>
               </form>
 
-              <p className="text-[10px] text-slate-400 mt-4 text-center">
+              <p className="text-[10px] text-slate-400 dark:text-gray-500 mt-4 text-center">
                 *Data Anda dilindungi penuh, aman tanpa spam, dan hanya digunakan untuk kepentingan verifikasi antrean kunjungan Nara Home.
               </p>
             </div>
@@ -2439,10 +2537,10 @@ export default function App() {
       </div>
 
       {/* Mobile Sticky CTA Bar (Bottom, screen < md only) */}
-      <div className="fixed bottom-0 left-0 w-full z-45 bg-white border-t border-gray-100 p-3 shadow-2xl flex items-center justify-between gap-3 md:hidden">
+      <div className="fixed bottom-0 left-0 w-full z-45 bg-white dark:bg-slate-950 border-t border-gray-100 dark:border-slate-800 p-3 shadow-2xl flex items-center justify-between gap-3 md:hidden">
         <button
           onClick={() => triggerWhatsApp()}
-          className="flex-1 border border-accent text-slate-800 font-bold py-3 px-2 rounded text-xs uppercase tracking-wider flex items-center justify-center gap-1 text-center"
+          className="flex-1 border border-accent text-slate-800 dark:text-white font-bold py-3 px-2 rounded text-xs uppercase tracking-wider flex items-center justify-center gap-1 text-center"
         >
           <Phone className="h-4 w-4" />
           <span>WhatsApp Chat</span>

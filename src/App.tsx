@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Home as HomeIcon,
   MapPin,
@@ -117,6 +118,51 @@ function Logo({ className = "h-9 w-auto" }: { className?: string }) {
   );
 }
 
+const SELLING_POINTS = [
+  {
+    title: "Sertifikat 100% SHM Sudah Pecah",
+    desc: "Sertifikat siap per kavling untuk proses akad KPR cepat & aman.",
+    icon: Key,
+    color: "text-accent"
+  },
+  {
+    title: "Akses Tol Pamulang Hanya 8 Menit",
+    desc: "Konektivitas super cepat menuju Jakarta Selatan & BSD City.",
+    icon: Milestone,
+    color: "text-amber-400"
+  },
+  {
+    title: "Struktur Dinding Bata Merah Real",
+    desc: "Mutu bangunan premium, dinding kokoh & kedap suara alami.",
+    icon: Layers,
+    color: "text-emerald-400"
+  },
+  {
+    title: "Stasiun KRL Sudimara 12 Menit",
+    desc: "Kemudahan mobilisasi harian bebas macet menuju pusat kota.",
+    icon: MapPin,
+    color: "text-sky-400"
+  },
+  {
+    title: "Pondasi Cakar Ayam Kokoh",
+    desc: "Konstruksi tangguh yang siap untuk pengembangan masa depan.",
+    icon: ShieldCheck,
+    color: "text-purple-400"
+  },
+  {
+    title: "Subsidi Biaya KPR s/d 20 Juta*",
+    desc: "Dukungan finansial eksklusif untuk kemudahan akad Anda.",
+    icon: Zap,
+    color: "text-yellow-400"
+  },
+  {
+    title: "Hanya 5 Menit ke Universitas Pamulang (UNPAM)",
+    desc: "Dekat fasilitas pendidikan ternama, prospek sewa sangat prospektif.",
+    icon: GraduationCap,
+    color: "text-indigo-400"
+  }
+];
+
 export default function App() {
   // Navigation & Scroll states
   const [isScrolled, setIsScrolled] = useState(false);
@@ -134,6 +180,8 @@ export default function App() {
   const [denahPageIndex, setDenahPageIndex] = useState(0);
   const [facadePageIndex, setFacadePageIndex] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState<any | null>(null);
+  const [activeSpecTab, setActiveSpecTab] = useState<"layout" | "material">("layout");
+  const [activeHighlightIndex, setActiveHighlightIndex] = useState(0);
   
   // Modal states
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -209,6 +257,14 @@ export default function App() {
       clearTimeout(mobileTimer);
     };
   }, [hasTriggeredExitIntent]);
+
+  // Auto-scrolling timer for key selling points highlight cycle
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveHighlightIndex((prev) => (prev + 1) % SELLING_POINTS.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Dynamic WhatsApp text helper
   const triggerWhatsApp = (customText?: string) => {
@@ -453,7 +509,7 @@ export default function App() {
         <div className="absolute inset-0">
           <SafeImage
             src={(PROPERTY_CONFIG as any).heroImage || PROPERTY_CONFIG.facade3D}
-            fallbackSrc="/src/assets/images/img15.webp"
+            fallbackSrc="/assets/images/img15.webp"
             alt="Nara Home Pamulang Premium Exterior Facade"
             className="w-full h-full object-cover object-center scale-105 animate-fade-in"
             loading="eager"
@@ -477,8 +533,64 @@ export default function App() {
             </h1>
 
             <p className="text-gray-200 text-base sm:text-lg lg:text-xl max-w-2xl font-light leading-relaxed">
-              Rumah 2 Lantai Modern mulai <strong className="text-accent font-semibold">Rp950 Jutaan*</strong> dengan spesifikasi struktur bata merah, keamanan nonstop, dan lokasi premium Tangerang Selatan.
+              Rumah 2 Lantai Modern mulai <strong className="text-accent font-semibold">Rp900 Jutaan*</strong> dengan spesifikasi struktur bata merah, keamanan nonstop, dan lokasi premium Tangerang Selatan.
             </p>
+
+            {/* Auto-cycling Key Selling Points Highlight Section */}
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 max-w-xl overflow-hidden relative shadow-md">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] text-accent uppercase tracking-wider font-bold flex items-center gap-1.5">
+                  <span className="flex h-1.5 w-1.5 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+                  </span>
+                  Keunggulan Utama Nara Home
+                </span>
+                <div className="flex gap-1">
+                  {SELLING_POINTS.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveHighlightIndex(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === activeHighlightIndex ? "w-4 bg-accent" : "w-1.5 bg-white/30 hover:bg-white/55"
+                      }`}
+                      aria-label={`Go to highlight ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative h-14 sm:h-12 overflow-hidden flex items-center">
+                <AnimatePresence mode="wait">
+                  {SELLING_POINTS.map((point, index) => {
+                    if (index !== activeHighlightIndex) return null;
+                    const PointIcon = point.icon;
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        transition={{ duration: 0.35, ease: "easeInOut" }}
+                        className="flex items-start space-x-3 w-full"
+                      >
+                        <div className="p-2 rounded-lg bg-white/10 flex-shrink-0 mt-0.5">
+                          <PointIcon className={`h-5 w-5 ${point.color}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-sans text-sm font-semibold text-white leading-tight">
+                            {point.title}
+                          </h4>
+                          <p className="text-gray-300 text-xs truncate">
+                            {point.desc}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
 
             {/* Micro Highlights Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 max-w-xl">
@@ -558,7 +670,7 @@ export default function App() {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-slate-900 text-sm">Strategis & Bebas Macet</h4>
-                  <p className="text-slate-500 text-xs mt-0.5">Hanya 10 menit menuju Tol Pamulang & Stasiun Sudimara.</p>
+                  <p className="text-slate-500 text-xs mt-0.5">Hanya 8 menit menuju Tol Pamulang & 12 menit ke Stasiun Sudimara.</p>
                 </div>
               </div>
             </div>
@@ -578,11 +690,17 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Image & Stats Card Left */}
-            <div className="lg:col-span-6 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="lg:col-span-6 relative"
+            >
               <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border border-white">
                 <SafeImage
-                  src="/src/assets/images/img3.webp"
-                  fallbackSrc="/src/assets/images/nara_living_room_1783879443554.jpg"
+                  src="/assets/images/img3.webp"
+                  fallbackSrc="/assets/images/nara_living_room_1783879443554.jpg"
                   alt="Nara Home Modern Living Room Interior"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -602,10 +720,16 @@ export default function App() {
 
               {/* Behind Accent Block */}
               <div className="absolute -top-6 -left-6 w-24 h-24 bg-accent/25 rounded-2xl -z-10" />
-            </div>
+            </motion.div>
 
             {/* Copy Content Right */}
-            <div className="lg:col-span-6 space-y-6 text-left lg:pl-6">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+              className="lg:col-span-6 space-y-6 text-left lg:pl-6"
+            >
               <div className="inline-block bg-primary/10 border border-primary/20 text-primary text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
                 Solusi Rumah Impian Anda
               </div>
@@ -675,7 +799,7 @@ export default function App() {
                   <span>Dapatkan Brosur & KPR Info</span>
                 </button>
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>
@@ -689,7 +813,13 @@ export default function App() {
         className="py-20 md:py-24 bg-white border-y border-gray-100"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+          >
             <span className="text-accent text-xs font-bold uppercase tracking-widest">Premium Living Standard</span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
               Keunggulan Utama Nara Home Pamulang
@@ -697,7 +827,7 @@ export default function App() {
             <p className="text-slate-500 text-sm sm:text-base">
               Setiap sudut cluster kami dirancang dengan penuh dedikasi untuk mendukung kehidupan keluarga harmonis dan investasi properti bernilai tinggi.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PROPERTY_CONFIG.highlights.map((item, index) => {
@@ -710,8 +840,12 @@ export default function App() {
               else if (item.icon === "Sparkles") IconComp = Sparkles;
 
               return (
-                <div
+                <motion.div
                   key={item.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                   className="group bg-cream p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1"
                 >
                   <div className="bg-primary group-hover:bg-accent text-white p-3.5 rounded-xl inline-block transition-colors mb-6 shadow-md">
@@ -723,12 +857,18 @@ export default function App() {
                   <p className="text-slate-600 group-hover:text-gray-200 text-sm leading-relaxed font-light">
                     {item.desc}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
 
-          <div className="mt-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+            className="mt-12 text-center"
+          >
             <button
               onClick={() => triggerWhatsApp("Halo, saya ingin bertanya lebih lanjut mengenai keunggulan cluster Nara Home.")}
               className="bg-accent hover:bg-accent-dark text-white px-8 py-3.5 rounded font-semibold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center space-x-2"
@@ -736,7 +876,7 @@ export default function App() {
               <span>Diskusikan Dengan Property Consultant Kami</span>
               <ExternalLink className="h-4 w-4" />
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -879,7 +1019,7 @@ export default function App() {
                   <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden border border-gray-150 bg-cream/30 p-2 shadow-inner group flex items-center justify-center">
                     <SafeImage
                       src={(PROPERTY_CONFIG as any).facade3DPages[facadePageIndex]}
-                      fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                      fallbackSrc="/assets/images/nara_exterior_hero_1783879429976.jpg"
                       alt={`3D Facade & Site Plan Nara Home Pamulang - Halaman ${facadePageIndex + 1}`}
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.01]"
                     />
@@ -941,16 +1081,16 @@ export default function App() {
                 <div className="md:col-span-7 bg-white p-2 rounded-xl border border-gray-150 flex justify-center items-center shadow-md aspect-4/3 relative overflow-hidden group">
                   {floorPlanLevel === "1st" ? (
                     <SafeImage
-                      src="/src/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
-                      fallbackSrc="/src/assets/images/nara_living_room_1783879443554.jpg"
+                      src="/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0005.webp"
+                      fallbackSrc="/assets/images/nara_living_room_1783879443554.jpg"
                       alt="Denah 3D Lantai 1 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="eager"
                     />
                   ) : (
                     <SafeImage
-                      src="/src/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
-                      fallbackSrc="/src/assets/images/nara_bedroom_1783879457070.jpg"
+                      src="/assets/images/1 PDF 3D DENAH - PROJECT CLUSTER - PAMULANG, TANGERANG SELATAN - BAPAK RAMLI_page-0006.webp"
+                      fallbackSrc="/assets/images/nara_bedroom_1783879457070.jpg"
                       alt="Denah 3D Lantai 2 Nara Home Pamulang"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="eager"
@@ -1110,53 +1250,88 @@ export default function App() {
 
             {/* Specifications Details - 5 Columns */}
             <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-lg text-left">
-              <h3 className="font-serif text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b border-gray-100 pb-3">
+              <h3 className="font-serif text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2 border-b border-gray-100 pb-3">
                 <ShieldCheck className="h-6 w-6 text-primary" />
                 <span>Spesifikasi Teknis Premium</span>
               </h3>
 
-              <div className="space-y-4 text-sm">
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Maximize2 className="h-4 w-4 text-accent" /> Luas Bangunan / Tanah</span>
-                  <span className="font-semibold text-slate-800">74 m² / 60 m²</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Layers className="h-4 w-4 text-accent" /> Jumlah Lantai</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floors} Lantai</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Bed className="h-4 w-4 text-accent" /> Kamar Tidur</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bedrooms} Kamar Utama</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Bath className="h-4 w-4 text-accent" /> Kamar Mandi</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bathrooms} Toilet</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Car className="h-4 w-4 text-accent" /> Kapasitas Carport</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.carport} Mobil</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Zap className="h-4 w-4 text-accent" /> Daya Listrik</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.electricity}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Droplet className="h-4 w-4 text-accent" /> Suplai Air Bersih</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.waterSupply}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><Shield className="h-4 w-4 text-accent" /> Struktur Dinding</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.structure}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-50 pb-2">
-                  <span className="text-slate-500 flex items-center gap-2"><HomeIcon className="h-4 w-4 text-accent" /> Finishing Lantai</span>
-                  <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floorFinishing}</span>
-                </div>
+              {/* Specification Tab Buttons */}
+              <div className="flex border-b border-gray-200 mb-6">
+                <button
+                  onClick={() => setActiveSpecTab("layout")}
+                  className={`flex-1 pb-3 text-xs uppercase font-bold tracking-wider border-b-2 transition-all ${
+                    activeSpecTab === "layout"
+                      ? "border-accent text-accent font-extrabold"
+                      : "border-transparent text-slate-400 hover:text-slate-700"
+                  }`}
+                >
+                  Dimensi & Layout
+                </button>
+                <button
+                  onClick={() => setActiveSpecTab("material")}
+                  className={`flex-1 pb-3 text-xs uppercase font-bold tracking-wider border-b-2 transition-all ${
+                    activeSpecTab === "material"
+                      ? "border-accent text-accent font-extrabold"
+                      : "border-transparent text-slate-400 hover:text-slate-700"
+                  }`}
+                >
+                  Material Bangunan (SEO)
+                </button>
               </div>
 
+              {activeSpecTab === "layout" ? (
+                <div className="space-y-4 text-sm animate-fade-in">
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Maximize2 className="h-4 w-4 text-accent" /> Luas Bangunan / Tanah</span>
+                    <span className="font-semibold text-slate-800">74 m² / 60 m²</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Layers className="h-4 w-4 text-accent" /> Jumlah Lantai</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floors} Lantai</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Bed className="h-4 w-4 text-accent" /> Kamar Tidur</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bedrooms} Kamar Tidur</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Bath className="h-4 w-4 text-accent" /> Kamar Mandi</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.bathrooms} Toilet</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Car className="h-4 w-4 text-accent" /> Kapasitas Carport</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.carport} Mobil (SUV Size)</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Zap className="h-4 w-4 text-accent" /> Daya Listrik</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.electricity}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Droplet className="h-4 w-4 text-accent" /> Suplai Air Bersih</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.waterSupply}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><Shield className="h-4 w-4 text-accent" /> Struktur Dinding</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.structure}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-50 pb-2">
+                    <span className="text-slate-500 flex items-center gap-2"><HomeIcon className="h-4 w-4 text-accent" /> Finishing Lantai</span>
+                    <span className="font-semibold text-slate-800">{PROPERTY_CONFIG.specs.floorFinishing}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3.5 text-xs animate-fade-in max-h-[420px] overflow-y-auto pr-2 scrollbar-thin">
+                  {((PROPERTY_CONFIG as any).materialSpecs || []).map((item: any, idx: number) => (
+                    <div key={idx} className="flex justify-between items-start border-b border-slate-50 pb-2 gap-4">
+                      <span className="text-slate-500 font-medium whitespace-nowrap">{item.label}</span>
+                      <span className="font-semibold text-slate-800 text-right">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+ 
               <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 mt-6 text-xs text-slate-600 leading-relaxed">
-                <span className="font-bold text-primary block mb-1">Membangun Dengan Kejujuran Struktur:</span>
-                Kami berkomitmen menggunakan material konstruksi asli sesuai spesifikasi yang ditunjukkan tanpa ada penyesuaian kualitas pasca pembelian.
+                <span className="font-bold text-primary block mb-1">Garansi Kualitas Material Resmi:</span>
+                Spesifikasi di atas merupakan jaminan mutu resmi dari Nara Home Pamulang demi mewujudkan investasi properti premium jangka panjang Anda.
               </div>
             </div>
 
@@ -1185,7 +1360,8 @@ export default function App() {
               const statusColors = {
                 Available: { bg: "bg-emerald-50 text-emerald-700 border-emerald-150", text: "Tersedia" },
                 Reserved: { bg: "bg-amber-50 text-amber-700 border-amber-150", text: "Dipesan" },
-                Sold: { bg: "bg-slate-100 text-slate-400 border-slate-200", text: "Terjual" }
+                Sold: { bg: "bg-slate-100 text-slate-400 border-slate-200", text: "Terjual" },
+                "Coming Soon": { bg: "bg-blue-50 text-blue-600 border-blue-150", text: "Coming Soon" }
               };
               const badge = statusColors[unit.status as keyof typeof statusColors];
 
@@ -1259,9 +1435,10 @@ export default function App() {
                     <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-bold uppercase tracking-wider ${
                       selectedUnit.status === "Available" ? "bg-emerald-50 text-emerald-700 border-emerald-150" :
                       selectedUnit.status === "Reserved" ? "bg-amber-50 text-amber-700 border-amber-150" :
+                      selectedUnit.status === "Coming Soon" ? "bg-blue-50 text-blue-600 border-blue-150" :
                       "bg-slate-100 text-slate-400 border-slate-200"
                     }`}>
-                      {selectedUnit.status === "Available" ? "Tersedia" : selectedUnit.status === "Reserved" ? "Dipesan" : "Terjual"}
+                      {selectedUnit.status === "Available" ? "Tersedia" : selectedUnit.status === "Reserved" ? "Dipesan" : selectedUnit.status === "Coming Soon" ? "Coming Soon" : "Terjual"}
                     </span>
                     <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-bold uppercase tracking-wider ${
                       selectedUnit.isReady 
@@ -1288,7 +1465,7 @@ export default function App() {
                   <div className="relative aspect-[3/4] md:aspect-auto md:h-[450px] bg-slate-50 border border-gray-150 rounded-xl overflow-hidden flex items-center justify-center p-4">
                     <SafeImage
                       src={selectedUnit.image}
-                      fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                      fallbackSrc="/assets/images/nara_exterior_hero_1783879429976.jpg"
                       alt={`Layout detail unit ${selectedUnit.number}`}
                       className="max-w-full max-h-full object-contain rounded-lg"
                     />
@@ -1467,7 +1644,7 @@ export default function App() {
       >
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/nara_living_room_1783879443554.jpg"
+            src="/assets/images/nara_living_room_1783879443554.jpg"
             alt="Nara Home Living Room Double Void"
             className="w-full h-full object-cover opacity-35 scale-105"
             loading="lazy"
@@ -1593,7 +1770,7 @@ export default function App() {
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      {fac.category === "Worship & Leisure" ? "Worship" : fac.category}
+                      {fac.category}
                     </button>
                   ))}
                 </div>
@@ -1729,8 +1906,8 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[3/4] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="/src/assets/images/img7.webp"
-                    fallbackSrc="/src/assets/images/nara_bedroom_1783879457070.jpg"
+                    src="/assets/images/img7.webp"
+                    fallbackSrc="/assets/images/nara_bedroom_1783879457070.jpg"
                     alt="Luxury Bedroom Suite Interior"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -1742,7 +1919,7 @@ export default function App() {
               <div className="col-span-6 space-y-4">
                 <div className="rounded-2xl overflow-hidden aspect-[1/1] shadow-2xl border border-primary-light">
                   <SafeImage
-                    src="/src/assets/images/img11.webp"
+                    src="/assets/images/img11.webp"
                     fallbackSrc="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80"
                     alt="Cozy Minimalist Kitchen"
                     className="w-full h-full object-cover"
@@ -1751,8 +1928,8 @@ export default function App() {
                 </div>
                 <div className="rounded-2xl overflow-hidden aspect-[4/5] shadow-2xl border border-primary-light bg-cream-dark">
                   <SafeImage
-                    src="/src/assets/images/img19.webp"
-                    fallbackSrc="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+                    src="/assets/images/img19.webp"
+                    fallbackSrc="/assets/images/nara_exterior_hero_1783879429976.jpg"
                     alt="Nara Home Modern Exterior detailing"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -1797,14 +1974,14 @@ export default function App() {
 
             {/* Content Copy Right */}
             <div className="lg:col-span-7 text-left space-y-6">
-              <span className="text-accent text-xs font-bold uppercase tracking-widest block">Trusted Developer Partner</span>
+              <span className="text-accent text-xs font-bold uppercase tracking-widest block">Pengembang Berkomitmen Tinggi</span>
               
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-slate-900 font-bold leading-tight">
-                Dipersembahkan Dengan Integritas oleh Tricore Indonesia
+                Dipersembahkan Dengan Integritas oleh Nara Home Pamulang
               </h2>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Tricore Indonesia didirikan atas dasar integritas tinggi, komitmen terhadap kualitas, dan kepuasan pelanggan yang mutlak. Kami percaya bahwa perumahan yang baik adalah perumahan yang dibangun menggunakan hati dan kejujuran spesifikasi.
+                Nara Home Pamulang dikembangkan atas dasar integritas tinggi, komitmen terhadap kualitas, dan kepuasan pelanggan yang mutlak. Kami percaya bahwa perumahan yang baik adalah perumahan yang dibangun menggunakan hati dan kejujuran spesifikasi.
               </p>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -2120,7 +2297,7 @@ export default function App() {
         {/* Background house parallax styled */}
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/nara_exterior_hero_1783879429976.jpg"
+            src="/assets/images/nara_exterior_hero_1783879429976.jpg"
             alt="Nara Home Modern Night Facade"
             className="w-full h-full object-cover opacity-15"
             loading="lazy"
@@ -2171,7 +2348,7 @@ export default function App() {
               Cluster hunian eksklusif bergaya arsitektur tropis modern minimalis di Tangerang Selatan. Memadukan estetika, kekuatan struktur bangunan nyata, dan kenyamanan asri keluarga.
             </p>
             <p className="text-gray-500 text-[10px]">
-              Didevelop oleh PT. Tricore Indonesia.
+              Dikembangkan oleh Nara Home Pamulang.
             </p>
           </div>
 
@@ -2211,7 +2388,7 @@ export default function App() {
           <div className="md:col-span-3 space-y-3">
             <h4 className="font-serif font-bold text-accent text-sm tracking-wide">Kepatuhan Hukum & Disclaimer</h4>
             <p className="text-gray-500 text-[10px] leading-relaxed">
-              Seluruh gambar, spesifikasi, dan deskripsi ilustrasi dalam situs landing page ini merupakan materi promosi resmi PT. Tricore Indonesia. Perubahan detail spesifikasi teknik dapat sewaktu-waktu dilakukan oleh developer demi peningkatan kualitas tanpa melanggar ketentuan akad perikatan jual beli resmi.
+              Seluruh gambar, spesifikasi, dan deskripsi ilustrasi dalam situs landing page ini merupakan materi promosi resmi Nara Home Pamulang. Perubahan detail spesifikasi teknik dapat sewaktu-waktu dilakukan demi peningkatan kualitas tanpa melanggar ketentuan akad perikatan jual beli resmi.
             </p>
             <div className="flex space-x-3 pt-2">
               <a href="#" className="text-gray-400 hover:text-accent transition-colors" aria-label="Facebook"><Smile className="h-5 w-5" /></a>
@@ -2224,7 +2401,7 @@ export default function App() {
 
         {/* Line divider */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-slate-900 text-center text-xs text-gray-500 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p>© 2026 Nara Home Pamulang. All rights reserved. Crafted with care by PT. Tricore Indonesia.</p>
+          <p>© 2026 Nara Home Pamulang. All rights reserved.</p>
           <div className="flex space-x-4 text-[10px]">
             <a href="#" className="hover:underline">Kebijakan Privasi</a>
             <a href="#" className="hover:underline">Syarat & Ketentuan</a>
@@ -2297,7 +2474,7 @@ export default function App() {
             
             <div className="aspect-video bg-black relative flex items-center justify-center">
               {/* Luxury simulated video player design */}
-              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/src/assets/images/nara_living_room_1783879443554.jpg')" }} />
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/images/nara_living_room_1783879443554.jpg')" }} />
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
               
               <div className="relative z-10 text-center max-w-md p-6 text-white space-y-4">
